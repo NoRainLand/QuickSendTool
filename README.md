@@ -1,0 +1,2 @@
+# QuickSendTool
+可以把某个文件右键发送到特定http端口的小工具
