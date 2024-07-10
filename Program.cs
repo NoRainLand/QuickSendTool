@@ -1,14 +1,19 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace NoRain
+﻿namespace NoRain
 {
     static class Program
     {
         [STAThread]
         static void Main()
         {
-            QSView.ShowView();
+            if (QSConfig.ReadConfig())
+            {
+
+            }
+            else
+            {
+
+                QSView.ShowView();
+            }
         }
     }
 }
