@@ -1,12 +1,9 @@
-using System;
-using System.Windows.Forms;
-
 namespace NoRain
 {
-    public static class QSView
+    public static class MainForm
     {
 
-        private static Form? form = null;
+        public static Form? form = null;
         private static Label? label = null;
 
         private static Label? label1 = null;
@@ -23,20 +20,14 @@ namespace NoRain
 
         private static Button? button1 = null;
 
-        private static Label? label4 = null;
 
-        private static Button? button2 = null;
 
+        private static NotifyIcon? notifyIcon = null;
+
+        private static ContextMenuStrip? trayMenu = null;
 
         public static void ShowView()
         {
-            InitForm();
-        }
-
-        private static void InitForm()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
             form = new Form
             {
                 Text = "QuickSendTool",
@@ -55,7 +46,7 @@ namespace NoRain
 
             label = new Label
             {
-                Text = "1，确认服务器配置",
+                Text = "请确认服务器配置",
                 Location = new Point(0, 0),
                 AutoSize = true,
             };
@@ -67,6 +58,7 @@ namespace NoRain
             };
             textBox1 = new TextBox
             {
+                Text = Config.host,
                 Location = new Point(label1.Location.X + label1.Width, label1.Location.Y - 5),
                 Width = 160
             };
@@ -78,6 +70,7 @@ namespace NoRain
             };
             textBox2 = new TextBox
             {
+                Text = Config.port.ToString(),
                 Location = new Point(label2.Location.X + label2.Width, label2.Location.Y - 5),
                 Width = 160
             };
@@ -89,6 +82,7 @@ namespace NoRain
             };
             textBox3 = new TextBox
             {
+                Text = Config.api,
                 Location = new Point(label3.Location.X + label3.Width, label3.Location.Y - 5),
                 Width = 160
             };
@@ -97,17 +91,34 @@ namespace NoRain
                 Text = "保存配置",
                 Location = new Point(20, 120)
             };
-            label4 = new Label
+
+            Button button2 = new Button
             {
-                Text = "2，添加注册表",
-                Location = new Point(0, 150),
-                AutoSize = true
+                Text = "测试连接",
+                Location = new Point(20, 150)
             };
-            button2 = new Button
-            {
-                Text = "确认添加",
-                Location = new Point(20, 180)
-            };
+
+            button2.Click += new EventHandler(async (sender, e) =>
+                            {
+                                string path = "C:\\Users\\NoRain_C\\Downloads\\yuanshen_4.2.0.apk";
+                                await SendToHttp.Send(path, (percentage) =>
+                                    {
+                                        Console.WriteLine($"上传进度: {percentage}%");
+                                    }, (success, message) =>
+                                    {
+                                        Console.WriteLine($"上传结果: {message}");
+                                    });
+                            });
+
+
+
+            button1.Click += new EventHandler((sender, e) =>
+                {
+                    Config.WriteConfig(textBox1?.Text ?? Config.host, int.TryParse(textBox2?.Text, out int tempPort) ? tempPort : Config.port, textBox3?.Text ?? Config.api);
+
+
+                });
+
 
 
             form.Controls.Add(label);
@@ -118,10 +129,41 @@ namespace NoRain
             form.Controls.Add(label3);
             form.Controls.Add(textBox3);
             form.Controls.Add(button1);
-            form.Controls.Add(label4);
+
             form.Controls.Add(button2);
-            Application.Run(form);
+            form.ShowDialog();
         }
 
+        public static void ShowTray()
+        {
+            notifyIcon = new NotifyIcon
+            {
+                Icon = new Icon("./img/Q32.ico"),
+                Text = "QuickSendTool",
+                Visible = true
+            };
+
+            trayMenu = new ContextMenuStrip();
+
+            trayMenu.Items.Add("显示", null, (sender, e) =>
+            {
+                if (form != null)
+                {
+                    form.ShowDialog();
+                }
+                else
+                {
+                    ShowView();
+                }
+            });
+
+            trayMenu.Items.Add("退出", null, (sender, e) =>
+            {
+                notifyIcon?.Dispose();
+                Application.Exit();
+            });
+
+            notifyIcon.ContextMenuStrip = trayMenu;
+        }
     }
 }

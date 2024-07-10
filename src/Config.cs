@@ -1,9 +1,14 @@
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
+
 namespace NoRain
 {
-    public static class QSConfig
+    public static class Config
     {
+
+        public static readonly int MinSize = 64;
+
+        public static string AppName = "NoRainQuickSendTool";
+
         //服务器ip
         public static string host = "http://127.0.0.1";
         //端口
@@ -12,6 +17,8 @@ namespace NoRain
         public static string api = "/upload";
 
         private static string configPath = "./QSConfig.json";
+
+        public static string PipeName = "NoRainQSendPipe";
 
         public static bool ReadConfig()
         {
@@ -29,9 +36,7 @@ namespace NoRain
                 port = int.TryParse(jObject["port"]?.ToString(), out int tempPort) ? tempPort : port;
                 api = jObject["api"]?.ToString() ?? api;
 
-                Console.WriteLine($"服务器 IP: {host}");
-                Console.WriteLine($"端口: {port}");
-                Console.WriteLine($"接口: {api}");
+                Console.WriteLine($"目标地址: {host}:{port}{api}");
                 return true;
             }
             else
@@ -44,9 +49,9 @@ namespace NoRain
         public static void WriteConfig(string host, int port, string api)
         {
 
-            QSConfig.host = host;
-            QSConfig.port = port;
-            QSConfig.api = api;
+            Config.host = host;
+            Config.port = port;
+            Config.api = api;
 
             JObject jObject = new JObject
             {
@@ -56,5 +61,8 @@ namespace NoRain
             };
             File.WriteAllText(configPath, jObject.ToString());
         }
+
+
+
     }
 }
