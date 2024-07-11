@@ -176,7 +176,7 @@ namespace NoRain
                     loadingLabel.ForeColor = Color.Red;
                 }
             }
-            await Task.Delay(500);
+            await Task.Delay(400);
             loadingForm?.Hide();
         }
 
@@ -187,9 +187,6 @@ namespace NoRain
                 loadingForm = new Form
                 {
                     Text = "上传进度：0.00%",
-
-                    Icon = new Icon("./img/Q32.ico"),
-
                     // 设置窗体不能放大缩小且不能最小化
                     FormBorderStyle = FormBorderStyle.FixedDialog,
                     Width = 300,
@@ -217,10 +214,19 @@ namespace NoRain
 
                 loadingForm.Controls.Add(loadingLabel);
                 loadingForm.Controls.Add(loadingLabel1);
-                ShowLoading(value);
+                UpdateProgress(value);
             }
             else
             {
+                UpdateProgress(value);
+            }
+        }
+
+        private static void UpdateProgress(double value)
+        {
+            if (loadingForm != null)
+            {
+
                 if (loadingForm.Visible == false)
                 {
                     loadingForm.Show();

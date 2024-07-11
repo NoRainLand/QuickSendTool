@@ -4,75 +4,46 @@ namespace NoRain
 {
     public static class Register
     {
-
         public static void Add()
         {
-            try
+            // 定义右键菜单的名称和要执行的程序路径
+            string menuName = "发送到服务器";
+            string menuCommand = $"\"{Application.ExecutablePath}\" \"%1\""; // %1 表示选中的文件路径
+
+            // 打开HKEY_CLASSES_ROOT\*\shell
+            RegistryKey shellKey = Registry.ClassesRoot.OpenSubKey(@"*\shell", true) ?? Registry.ClassesRoot.CreateSubKey(@"*\shell");
+
+            // 在shell下创建一个新的键（即新的右键菜单项）
+            RegistryKey newKey = shellKey.CreateSubKey(menuName);
+            if (newKey != null)
             {
-                // 在 HKEY_CLASSES_ROOT\*\shell 下创建新键
-                // RegistryKey shellKey = Registry.ClassesRoot.OpenSubKey(@"*\shell", true) ?? Registry.ClassesRoot.CreateSubKey(@"*\shell");
-                // if (shellKey != null)
-                // {
-                //     RegistryKey newKey = shellKey.CreateSubKey("发送到目标服务器");
-                //     RegistryKey commandKey = newKey.CreateSubKey("command");
-
-                //     // 设置命令行
-                //     commandKey.SetValue("", $"cmd.exe /C start \"\" /B \"{Application.ExecutablePath}\" \"%1\"");
-
-                //     // 关闭注册表键
-                //     commandKey.Close();
-                //     newKey.Close();
-                //     shellKey.Close();
-
-                // }
-
-
-                // 注册表项路径
-                string keyPath = @"Software\Classes\*\shell\SendToServer";
-
-                // 创建新的子项
-                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(keyPath))
+                // 在新的键下创建command键，并设置其默认值为程序路径
+                RegistryKey commandKey = newKey.CreateSubKey("command");
+                if (commandKey != null)
                 {
-                    key.SetValue("", "发送到服务器");
-                    using (RegistryKey subKey = key.CreateSubKey("command"))
-                    {
-                        // 替换为你的程序路径
-                        string command = $"\"{Application.ExecutablePath}\" \"%1\"";
-                        subKey.SetValue("", command);
-                    }
+                    commandKey.SetValue("", menuCommand); // 设置默认值
+                    commandKey.Close();
                 }
+                newKey.Close();
+            }
+            shellKey.Close();
 
-            }
-            catch (SecurityException secEx)
-            {
-                // 权限问题
-                Console.WriteLine("权限不足: " + secEx.Message);
-            }
-            catch (Exception ex)
-            {
-                // 其他错误
-                Console.WriteLine("发生错误: " + ex.Message);
-            }
         }
-
 
         public static void Remove()
         {
-             string keyPath = @"Software\Classes\*\shell\SendToServer";
-            try
+            // 定义要移除的右键菜单的名称
+            string menuName = "发送到服务器";
+
+            // 打开HKEY_CLASSES_ROOT\*\shell
+            RegistryKey? shellKey = Registry.ClassesRoot.OpenSubKey(@"*\shell", true);
+
+            if (shellKey != null)
             {
-                // 删除注册表键
-                Registry.ClassesRoot.DeleteSubKeyTree(keyPath);
-            }
-            catch (SecurityException secEx)
-            {
-                // 权限问题
-                Console.WriteLine("权限不足: " + secEx.Message);
-            }
-            catch (Exception ex)
-            {
-                // 其他错误
-                Console.WriteLine("发生错误: " + ex.Message);
+                // 移除指定的键（即右键菜单项）
+                shellKey.DeleteSubKeyTree(menuName, false);
+
+                shellKey.Close();
             }
         }
     }

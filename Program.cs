@@ -1,4 +1,5 @@
-﻿using System.IO.Pipes;
+﻿using System.Diagnostics;
+using System.IO.Pipes;
 
 namespace NoRain
 {
@@ -7,41 +8,27 @@ namespace NoRain
         [STAThread]
         static void Main(string[] args)
         {
-
-
-            // 尝试创建一个命名互斥体
-            bool isNewInstance;
-            using (Mutex mutex = new Mutex(true, Config.AppName, out isNewInstance))
+            if (args != null && args.Length > 0)
             {
-                if (isNewInstance)
+                string path = args[0];
+                ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    if (args != null && args.Length > 0)
-                    {
-                        string path = args[0];
-                        StartApp(path);
-                    }
-                    else
-                    {
-                        StartApp();
-                    }
-                    GC.KeepAlive(mutex); // 防止互斥体在应用程序运行时被垃圾回收
-                    Task.Run(() => ListenForMessages());
-                }
-                else
-                {
-                    if (args != null && args.Length > 0)
-                    {
-                        string path = args[0];
-                        SendMessage(path);
-                    }
-                    else
-                    {
-                        Console.WriteLine("什么也不做");
-                        SendMessage("123123");
-                    }
-                }
-            }
+                    // FileName = $"{Appt}", // 指定要运行的程序
+                    CreateNoWindow = true, // 不创建窗口
+                    UseShellExecute = false // 不使用shell执行程序
+                };
 
+                Process process = new Process
+                {
+                    StartInfo = startInfo
+                };
+
+                process.Start();
+            }
+            else
+            {
+                StartApp();
+            }
 
         }
 
@@ -83,7 +70,7 @@ namespace NoRain
             }
         }
 
-        static async void StartApp(string path = "")
+        static void StartApp(string path = "")
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -103,17 +90,6 @@ namespace NoRain
                 Register.Remove();
                 Console.WriteLine("程序退出");
             };
-
-            if (path != null && path != "")
-            {
-                await SendToHttp.Send(path, (percentage) =>
-                    {
-                        Console.WriteLine($"上传进度: {percentage}%");
-                    }, (success, message) =>
-                    {
-                        Console.WriteLine(message);
-                    });
-            }
             Console.WriteLine("程序启动");
             Application.Run();
         }
