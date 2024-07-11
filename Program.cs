@@ -58,12 +58,12 @@ namespace NoRain
                         var message = reader.ReadLine();
 
                         await SendToHttp.Send(message ?? "", (percentage) =>
-                             {
-                                 Console.WriteLine($"上传进度: {percentage}%");
-                             }, (success, message) =>
-                             {
-                                 Console.WriteLine(message);
-                             });
+                            {
+                                Console.WriteLine($"上传进度: {percentage}%");
+                            }, (success, message) =>
+                            {
+                                Console.WriteLine(message);
+                            });
                     }
                     server.Disconnect();
                 }

@@ -12,53 +12,6 @@ namespace NoRain
         public delegate void ProgressCallback(double percentage);
         public delegate void CompletionCallback(bool success, string message);
 
-        //     public async static Task Send(string path, ProgressCallback progressCallback, CompletionCallback completionCallback)
-        //     {
-        //         string url = $"{Config.host}:{Config.port}{Config.api}";
-        //         // 确保文件存在
-        //         if (!File.Exists(path))
-        //         {
-        //             Console.WriteLine("文件不存在");
-        //             completionCallback(false, "文件不存在");
-        //             return;
-        //         }
-
-        //         try
-        //         {
-        //             using (var client = new HttpClient())
-        //             using (var content = new MultipartFormDataContent())
-        //             using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
-        //             {
-        //                 var fileContent = new StreamContent(fileStream);
-        //                 fileContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data")
-        //                 {
-        //                     Name = "\"file\"", // 服务器端接收文件的参数名
-        //                     FileName = "\"" + Path.GetFileName(path) + "\""
-        //                 };
-        //                 content.Add(fileContent);
-
-        //                 // 创建进度报告器并设置回调
-        //                 var progress = new Progress<long>(totalBytes =>
-        //                 {
-        //                     double percentage = (double)totalBytes / fileStream.Length * 100;
-        //                     progressCallback(percentage);
-        //                 });
-
-
-
-        //                 // 发送POST请求到服务器
-        //                 var response = await client.PostAsync(url, content);
-
-        //                 completionCallback(true, $"服务器响应状态码: {response.StatusCode}");
-        //             }
-        //         }
-        //         catch (Exception ex)
-        //         {
-        //             completionCallback(false, $"发送文件时发生错误: {ex.Message}");
-        //         }
-        //     }
-        // }
-        // 修改 Send 方法中的文件上传部分
         public async static Task Send(string path, Action<double> progressCallback, Action<bool, string> completionCallback)
         {
             string url = $"{Config.host}:{Config.port}{Config.api}";
@@ -68,16 +21,28 @@ namespace NoRain
                 completionCallback(false, "文件不存在");
                 return;
             }
-
+            SynchronizationContext? uiContext = SynchronizationContext.Current;
             try
             {
                 using (var client = new HttpClient())
                 using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
                 {
+                    bool isOverSize = fileStream.Length > Config.MinSize * 1024 * 1024;
                     var fileContent = new ProgressableStreamContent(fileStream, 4096, (sent, total) =>
                     {
                         double percentage = (double)sent / total * 100;
-                        progressCallback(percentage);
+                        if (isOverSize)
+                        {
+                            progressCallback(percentage);
+                            // 使用Invoke确保在UI线程上更新UI
+                            if (uiContext != null)
+                            {
+                                uiContext.Post(_ =>
+                                {
+                                    MainForm.ShowLoading(percentage);
+                                }, null);
+                            }
+                        }
                     });
 
                     fileContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data")
@@ -92,12 +57,27 @@ namespace NoRain
 
                         var response = await client.PostAsync(url, content);
                         completionCallback(true, $"服务器响应状态码: {response.StatusCode}");
+                        if (uiContext != null)
+                        {
+                            uiContext.Post(async _ =>
+                            {
+                                await MainForm.HideLoading(true);
+                            }, null);
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
                 completionCallback(false, $"发送文件时发生错误: {ex.Message}");
+                if (uiContext != null)
+                {
+                    uiContext.Post(async _ =>
+                    {
+                        await MainForm.HideLoading(false);
+                    }, null);
+                }
+
             }
         }
 
@@ -140,6 +120,18 @@ namespace NoRain
                 length = content.Length;
                 return true;
             }
+        }
+
+        public async static void TestSend()
+        {
+            string path = "C:\\Users\\NoRain_C\\Downloads\\yuanshen_4.2.0.apk";
+            await SendToHttp.Send(path, (percentage) =>
+                {
+                    // Console.WriteLine($"上传进度: {percentage}%");
+                }, (success, message) =>
+                {
+                    Console.WriteLine($"上传结果: {message}");
+                });
         }
 
     }

@@ -1,3 +1,5 @@
+using System.CodeDom;
+
 namespace NoRain
 {
     public static class MainForm
@@ -92,31 +94,14 @@ namespace NoRain
                 Location = new Point(20, 120)
             };
 
-            Button button2 = new Button
-            {
-                Text = "测试连接",
-                Location = new Point(20, 150)
-            };
 
-            button2.Click += new EventHandler(async (sender, e) =>
-                            {
-                                string path = "C:\\Users\\NoRain_C\\Downloads\\yuanshen_4.2.0.apk";
-                                await SendToHttp.Send(path, (percentage) =>
-                                    {
-                                        Console.WriteLine($"上传进度: {percentage}%");
-                                    }, (success, message) =>
-                                    {
-                                        Console.WriteLine($"上传结果: {message}");
-                                    });
-                            });
 
 
 
             button1.Click += new EventHandler((sender, e) =>
                 {
                     Config.WriteConfig(textBox1?.Text ?? Config.host, int.TryParse(textBox2?.Text, out int tempPort) ? tempPort : Config.port, textBox3?.Text ?? Config.api);
-
-
+                    form?.Hide();
                 });
 
 
@@ -130,8 +115,10 @@ namespace NoRain
             form.Controls.Add(textBox3);
             form.Controls.Add(button1);
 
-            form.Controls.Add(button2);
-            form.ShowDialog();
+
+
+
+            form.Show();
         }
 
         public static void ShowTray()
@@ -149,7 +136,7 @@ namespace NoRain
             {
                 if (form != null)
                 {
-                    form.ShowDialog();
+                    form.Show();
                 }
                 else
                 {
@@ -164,6 +151,105 @@ namespace NoRain
             });
 
             notifyIcon.ContextMenuStrip = trayMenu;
+        }
+
+        // 显示加载进度
+
+        private static Form? loadingForm = null;
+
+        private static Label? loadingLabel = null;
+
+        private static Label? loadingLabel1 = null;
+
+        public async static Task HideLoading(bool success)
+        {
+            if (loadingLabel != null)
+            {
+                if (success)
+                {
+                    loadingLabel.Text = "上传成功";
+                    loadingLabel.ForeColor = Color.Green;
+                }
+                else
+                {
+                    loadingLabel.Text = "上传失败";
+                    loadingLabel.ForeColor = Color.Red;
+                }
+            }
+            await Task.Delay(500);
+            loadingForm?.Hide();
+        }
+
+        public static void ShowLoading(double value)
+        {
+            if (loadingForm == null)
+            {
+                loadingForm = new Form
+                {
+                    Text = "上传进度：0.00%",
+
+                    Icon = new Icon("./img/Q32.ico"),
+
+                    // 设置窗体不能放大缩小且不能最小化
+                    FormBorderStyle = FormBorderStyle.FixedDialog,
+                    Width = 300,
+                    Height = 100,
+                    TopMost = true, // 设置窗体为顶置
+                    StartPosition = FormStartPosition.CenterScreen,
+                    // 禁用关闭按钮需要在窗体的 ControlBox 属性设置为 false
+                    ControlBox = false,
+                    ShowInTaskbar = false
+                };
+                loadingLabel = new Label
+                {
+                    Location = new Point(5, 5),
+                    ForeColor = Color.Black,
+                };
+
+                loadingLabel1 = new Label
+                {
+                    Location = new Point(5, 25),
+                    ForeColor = Color.Green,
+                    Size = new Size(300, 20),
+
+                };
+                loadingLabel1.Font = new Font(loadingLabel1.Font.Name, 12, loadingLabel1.Font.Style);
+
+                loadingForm.Controls.Add(loadingLabel);
+                loadingForm.Controls.Add(loadingLabel1);
+                ShowLoading(value);
+            }
+            else
+            {
+                if (loadingForm.Visible == false)
+                {
+                    loadingForm.Show();
+                    loadingForm.Activate();
+                }
+                loadingForm.Text = $"上传进度：{value.ToString("F2")}%";
+
+                if (loadingLabel1 != null)
+                {
+                    int v = (int)Math.Ceiling(value / 5);
+                    string text = "";
+                    for (int i = 0; i < v; i++)
+                    {
+                        text += "#";
+                    }
+                    loadingLabel1.Text = text;
+                    if (loadingLabel != null)
+                    {
+                        if (v % 2 == 1)
+                        {
+                            loadingLabel.Text = "上传中…";
+                        }
+                        else
+                        {
+                            loadingLabel.Text = "上传中……";
+                        }
+                    }
+                }
+            }
         }
     }
 }
