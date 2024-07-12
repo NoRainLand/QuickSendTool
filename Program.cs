@@ -34,6 +34,7 @@ namespace NoRain
             else
             {
                 MainForm.ShowView();
+                MainForm.ShowTray();
             }
 
             AddEvent();
@@ -57,16 +58,12 @@ namespace NoRain
 
         }
 
-        static async void OnSendFile(string path)
+        static void OnSendFile(string path)
         {
-            await SendToHttp.Send(path, (percentage) =>
-                {
-                    Console.WriteLine($"上传进度: {percentage}%");
-                }, (success, message) =>
-                {
-                    Console.WriteLine(message);
-                });
+            SendToHttp.MainSend(path);
         }
+
+
 
         static void OnExit(Object? sender, EventArgs args)
         {

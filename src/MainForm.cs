@@ -28,6 +28,8 @@ namespace NoRain
 
         private static ContextMenuStrip? trayMenu = null;
 
+        public static SynchronizationContext? uiContext = null;
+
         public static void ShowView()
         {
             form = new Form
@@ -151,15 +153,22 @@ namespace NoRain
             });
 
             notifyIcon.ContextMenuStrip = trayMenu;
+
+            uiContext = SynchronizationContext.Current;
+
         }
 
         // 显示加载进度
 
         private static Form? loadingForm = null;
 
+        private static Label? titleLabel = null;
+
         private static Label? loadingLabel = null;
 
         private static Label? loadingLabel1 = null;
+
+        private static Panel? colorPanel = null;
 
         public async static Task HideLoading(bool success)
         {
@@ -186,32 +195,52 @@ namespace NoRain
             {
                 loadingForm = new Form
                 {
-                    Text = "上传进度：0.00%",
+                    Text = Config.AppName,
                     // 设置窗体不能放大缩小且不能最小化
-                    FormBorderStyle = FormBorderStyle.FixedDialog,
-                    Width = 300,
+                    FormBorderStyle = FormBorderStyle.None,
+                    Width = 285,
                     Height = 100,
                     TopMost = true, // 设置窗体为顶置
                     StartPosition = FormStartPosition.CenterScreen,
                     // 禁用关闭按钮需要在窗体的 ControlBox 属性设置为 false
                     ControlBox = false,
                     ShowInTaskbar = false
+
                 };
+
+                colorPanel = new Panel
+                {
+                    Location = new Point(0, 0),
+                    Size = new Size(285, 30),
+                    BackColor = Color.White
+                };
+
+                titleLabel = new Label
+                {
+                    Text = "上传进度:0.00%",
+                    Location = new Point(5, 5),
+                    ForeColor = Color.Black,
+                    BackColor = Color.White,
+                    AutoSize = true
+                };
+
                 loadingLabel = new Label
                 {
-                    Location = new Point(5, 5),
+                    Location = new Point(10, 45),
                     ForeColor = Color.Black,
                 };
 
                 loadingLabel1 = new Label
                 {
-                    Location = new Point(5, 25),
+                    Location = new Point(10, 65),
                     ForeColor = Color.Green,
-                    Size = new Size(300, 20),
+                    Size = new Size(290, 20),
 
                 };
                 loadingLabel1.Font = new Font(loadingLabel1.Font.Name, 12, loadingLabel1.Font.Style);
-
+                titleLabel.Font = new Font(titleLabel.Font.Name, 10, titleLabel.Font.Style);
+                loadingForm.Controls.Add(titleLabel);
+                loadingForm.Controls.Add(colorPanel);
                 loadingForm.Controls.Add(loadingLabel);
                 loadingForm.Controls.Add(loadingLabel1);
                 UpdateProgress(value);
@@ -232,11 +261,14 @@ namespace NoRain
                     loadingForm.Show();
                     loadingForm.Activate();
                 }
-                loadingForm.Text = $"上传进度：{value.ToString("F2")}%";
+                if (titleLabel != null)
+                {
+                    titleLabel.Text = $"上传进度：{value.ToString("F2")}%";
+                }
 
                 if (loadingLabel1 != null)
                 {
-                    int v = (int)Math.Ceiling(value / 5);
+                    int v = (int)Math.Ceiling(value / 4);
                     string text = "";
                     for (int i = 0; i < v; i++)
                     {

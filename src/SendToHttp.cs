@@ -8,21 +8,25 @@ namespace NoRain
         public delegate void ProgressCallback(double percentage);
         public delegate void CompletionCallback(bool success, string message);
 
+        public static async void MainSend(string path)
+        {
+            await Send(path, (percentage) =>
+                {
+                    Console.WriteLine($"上传进度: {percentage}%");
+                }, (success, message) =>
+                {
+                    Console.WriteLine(message);
+                });
+        }
+
         public async static Task Send(string path, Action<double> progressCallback, Action<bool, string> completionCallback)
         {
             string url = $"{Config.host}:{Config.port}{Config.api}";
-            Console.WriteLine(url);
             if (!File.Exists(path))
             {
                 Console.WriteLine("文件不存在");
                 completionCallback(false, "文件不存在");
                 return;
-            }
-            SynchronizationContext? uiContext = SynchronizationContext.Current;
-            if (uiContext == null)
-            {
-                uiContext = new SynchronizationContext();
-                SynchronizationContext.SetSynchronizationContext(uiContext);
             }
             try
             {
@@ -37,9 +41,9 @@ namespace NoRain
                         {
                             progressCallback(percentage);
                             // 使用Invoke确保在UI线程上更新UI
-                            if (uiContext != null)
+                            if (MainForm.uiContext != null)
                             {
-                                uiContext.Post(_ =>
+                                MainForm.uiContext.Post(_ =>
                                 {
                                     MainForm.ShowLoading(percentage);
                                 }, null);
@@ -59,11 +63,11 @@ namespace NoRain
 
                         var response = await client.PostAsync(url, content);
                         completionCallback(true, $"服务器响应状态码: {response.StatusCode}");
-                        if (uiContext != null)
+                        if (MainForm.uiContext != null)
                         {
-                            uiContext.Post(async _ =>
+                            MainForm.uiContext.Post(async _ =>
                             {
-                                await MainForm.HideLoading(true);
+                                await MainForm.HideLoading(response.StatusCode == HttpStatusCode.OK);
                             }, null);
                         }
                     }
@@ -72,9 +76,9 @@ namespace NoRain
             catch (Exception ex)
             {
                 completionCallback(false, $"发送文件时发生错误: {ex.Message}");
-                if (uiContext != null)
+                if (MainForm.uiContext != null)
                 {
-                    uiContext.Post(async _ =>
+                    MainForm.uiContext.Post(async _ =>
                     {
                         await MainForm.HideLoading(false);
                     }, null);
