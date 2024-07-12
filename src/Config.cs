@@ -5,9 +5,11 @@ namespace NoRain
     public static class Config
     {
 
+
+
         public static readonly int MinSize = 64;
 
-        public static string AppName = "NoRainQuickSendTool";
+        public static string AppName = "QuickSendTool";
 
         //服务器ip
         public static string host = "http://127.0.0.1";

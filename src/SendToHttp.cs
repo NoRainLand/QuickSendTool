@@ -11,6 +11,7 @@ namespace NoRain
         public async static Task Send(string path, Action<double> progressCallback, Action<bool, string> completionCallback)
         {
             string url = $"{Config.host}:{Config.port}{Config.api}";
+            Console.WriteLine(url);
             if (!File.Exists(path))
             {
                 Console.WriteLine("文件不存在");
@@ -18,6 +19,11 @@ namespace NoRain
                 return;
             }
             SynchronizationContext? uiContext = SynchronizationContext.Current;
+            if (uiContext == null)
+            {
+                uiContext = new SynchronizationContext();
+                SynchronizationContext.SetSynchronizationContext(uiContext);
+            }
             try
             {
                 using (var client = new HttpClient())
