@@ -31,3 +31,24 @@
 5，<OutputType>Exe</OutputType> 会打包生成带命令行的exe程序，WinExe才是我们需要的。
 
 6，win没有提供修改标题样式的API，建议自己模拟一个标题栏……
+
+7,图标需要嵌入.exe，可以通过如下代码查看已经嵌入的资源
+
+```cs
+Assembly asm = Assembly.GetExecutingAssembly();
+foreach (var resourceName in asm.GetManifestResourceNames())
+{
+    Console.WriteLine(resourceName);
+}
+assembly.GetManifestResourceStream(resourceName);
+```
+
+同时可以使用如下代码嵌入.cspoj
+
+```xml
+<EmbeddedResource Include="img\Q.ico">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+</EmbeddedResource>
+```
+
+注意一点，```GetManifestResourceStream```中的命名空间是指程序的名字，而不是代码里边使用的命名空间……

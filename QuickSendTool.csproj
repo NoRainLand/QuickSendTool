@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
+        <OutputType>WinExe</OutputType>
         <PublishSingleFile>true</PublishSingleFile>
         <SelfContained>true</SelfContained>
         <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
@@ -12,14 +12,19 @@
         <StartupObject>NoRain.Program</StartupObject>
         <ApplicationIcon>img\Q.ico</ApplicationIcon>
         <Authors>NoRain</Authors>
-        <Company>Unknown</Company>
+        <Company>unknownmothergoose</Company>
         <Copyright>Copyright by NoRain</Copyright>
         <PackageIcon>img\Q.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
 
     </PropertyGroup>
     <ItemGroup>
-        <Content Include="img\Q.ico" />
+        <EmbeddedResource Include="img\Q.ico">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <EmbeddedResource Include="img\Q.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedResource>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

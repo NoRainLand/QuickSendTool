@@ -1,4 +1,5 @@
 using System.IO;
+using System.Reflection;
 
 namespace NoRain
 {
@@ -29,13 +30,37 @@ namespace NoRain
 
         public SynchronizationContext? uiContext = null;
 
+
+        public Icon? GetIcon()
+        {
+            Assembly asm = Assembly.GetExecutingAssembly();
+            // foreach (var resourceName in asm.GetManifestResourceNames())
+            // {
+            //     Console.WriteLine(resourceName);
+            // }
+            using (Stream? iconStream = asm.GetManifestResourceStream($"{Config.AppName}.img.Q.ico"))
+            {
+                if (iconStream != null)
+                {
+                    return new Icon(iconStream);
+                }
+                else
+                {
+                    Console.WriteLine("资源未找到");
+                    Application.Exit();//不正确，直接退出得了
+                    return null;
+                }
+            }
+
+        }
+
         public void ShowView()
         {
             form = new Form
             {
                 Text = "QuickSendTool",
 
-                Icon = new Icon("./img/Q.ico"),
+                Icon = GetIcon(),
 
                 // 设置窗体不能放大缩小且不能最小化
                 FormBorderStyle = FormBorderStyle.FixedDialog,
@@ -128,7 +153,7 @@ namespace NoRain
         {
             notifyIcon = new NotifyIcon
             {
-                Icon = new Icon("./img/Q.ico"),
+                Icon = GetIcon(),
                 Text = "QuickSendTool",
                 Visible = true
             };
