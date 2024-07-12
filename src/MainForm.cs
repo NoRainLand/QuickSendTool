@@ -1,4 +1,4 @@
-using System.CodeDom;
+using System.IO;
 
 namespace NoRain
 {
@@ -34,7 +34,7 @@ namespace NoRain
             {
                 Text = "QuickSendTool",
 
-                Icon = new Icon("./img/Q32.ico"),
+                // Icon = new Icon(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "img", "Q32.ico")),
 
                 // 设置窗体不能放大缩小且不能最小化
                 FormBorderStyle = FormBorderStyle.FixedDialog,

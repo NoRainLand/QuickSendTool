@@ -11,19 +11,7 @@ namespace NoRain
             if (args != null && args.Length > 0)
             {
                 string path = args[0];
-                ProcessStartInfo startInfo = new ProcessStartInfo
-                {
-                    // FileName = $"{Appt}", // 指定要运行的程序
-                    CreateNoWindow = true, // 不创建窗口
-                    UseShellExecute = false // 不使用shell执行程序
-                };
-
-                Process process = new Process
-                {
-                    StartInfo = startInfo
-                };
-
-                process.Start();
+                StartApp(path);
             }
             else
             {
@@ -74,22 +62,37 @@ namespace NoRain
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            if (Config.ReadConfig())
+            if (path != "")
             {
-                MainForm.ShowTray();
+                MainForm.ShowView();
+                // SendToHttp.Send(path, (percentage) =>
+                // {
+                //     Console.WriteLine($"上传进度: {percentage}%");
+                // }, (success, message) =>
+                // {
+                //     Console.WriteLine(message);
+
+                // }).Wait();
             }
             else
             {
-                MainForm.ShowView();
-            }
 
-            Register.Add();
-            AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
-            {
-                Register.Remove();
-                Console.WriteLine("程序退出");
-            };
+                if (Config.ReadConfig())
+                {
+                    MainForm.ShowTray();
+                }
+                else
+                {
+                    MainForm.ShowView();
+                }
+
+                Register.Add();
+                AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
+                {
+                    Register.Remove();
+                    Console.WriteLine("程序退出");
+                };
+            }
             Console.WriteLine("程序启动");
             Application.Run();
         }
