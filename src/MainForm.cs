@@ -2,41 +2,40 @@ using System.IO;
 
 namespace NoRain
 {
-    public static class MainForm
+    public class MainForm : Form
     {
+        public Form? form = null;
+        private Label? label = null;
 
-        public static Form? form = null;
-        private static Label? label = null;
+        private Label? label1 = null;
 
-        private static Label? label1 = null;
+        private TextBox? textBox1 = null;
 
-        private static TextBox? textBox1 = null;
+        private Label? label2 = null;
 
-        private static Label? label2 = null;
+        private TextBox? textBox2 = null;
 
-        private static TextBox? textBox2 = null;
+        private Label? label3 = null;
 
-        private static Label? label3 = null;
+        private TextBox? textBox3 = null;
 
-        private static TextBox? textBox3 = null;
-
-        private static Button? button1 = null;
-
+        private Button? button1 = null;
 
 
-        private static NotifyIcon? notifyIcon = null;
 
-        private static ContextMenuStrip? trayMenu = null;
+        private NotifyIcon? notifyIcon = null;
 
-        public static SynchronizationContext? uiContext = null;
+        private ContextMenuStrip? trayMenu = null;
 
-        public static void ShowView()
+        public SynchronizationContext? uiContext = null;
+
+        public void ShowView()
         {
             form = new Form
             {
                 Text = "QuickSendTool",
 
-                // Icon = new Icon(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "img", "Q32.ico")),
+                Icon = new Icon("./img/Q.ico"),
 
                 // 设置窗体不能放大缩小且不能最小化
                 FormBorderStyle = FormBorderStyle.FixedDialog,
@@ -104,7 +103,9 @@ namespace NoRain
                 {
                     Config.WriteConfig(textBox1?.Text ?? Config.host, int.TryParse(textBox2?.Text, out int tempPort) ? tempPort : Config.port, textBox3?.Text ?? Config.api);
                     form?.Hide();
+                    // ShowLoading(100.0);
                 });
+
 
 
 
@@ -123,11 +124,11 @@ namespace NoRain
             form.Show();
         }
 
-        public static void ShowTray()
+        public void ShowTray()
         {
             notifyIcon = new NotifyIcon
             {
-                Icon = new Icon("./img/Q32.ico"),
+                Icon = new Icon("./img/Q.ico"),
                 Text = "QuickSendTool",
                 Visible = true
             };
@@ -160,17 +161,19 @@ namespace NoRain
 
         // 显示加载进度
 
-        private static Form? loadingForm = null;
+        private Form? loadingForm = null;
 
-        private static Label? titleLabel = null;
+        private Label? titleLabel = null;
 
-        private static Label? loadingLabel = null;
+        private Label? loadingLabel = null;
 
-        private static Label? loadingLabel1 = null;
+        private Label? loadingLabel1 = null;
 
-        private static Panel? colorPanel = null;
+        private Panel? titlePanel = null;
 
-        public async static Task HideLoading(bool success)
+        private Panel? bgPanel = null;
+
+        public async Task HideLoading(bool success)
         {
             if (loadingLabel != null)
             {
@@ -189,7 +192,7 @@ namespace NoRain
             loadingForm?.Hide();
         }
 
-        public static void ShowLoading(double value)
+        public void ShowLoading(double value)
         {
             if (loadingForm == null)
             {
@@ -204,16 +207,25 @@ namespace NoRain
                     StartPosition = FormStartPosition.CenterScreen,
                     // 禁用关闭按钮需要在窗体的 ControlBox 属性设置为 false
                     ControlBox = false,
-                    ShowInTaskbar = false
+                    ShowInTaskbar = false,
+                    BackColor = Color.FromArgb(255, 100, 100, 100),
 
                 };
 
-                colorPanel = new Panel
+                titlePanel = new Panel
                 {
-                    Location = new Point(0, 0),
-                    Size = new Size(285, 30),
+                    Location = new Point(1, 1),
+                    Size = new Size(283, 30),
                     BackColor = Color.White
                 };
+
+                bgPanel = new Panel
+                {
+                    Location = new Point(1, 1),
+                    Size = new Size(283, 98),
+                    BackColor = Color.FromArgb(255, 240, 240, 240),
+                };
+
 
                 titleLabel = new Label
                 {
@@ -228,21 +240,25 @@ namespace NoRain
                 {
                     Location = new Point(10, 45),
                     ForeColor = Color.Black,
+                    BackColor = Color.FromArgb(255, 240, 240, 240),
                 };
 
                 loadingLabel1 = new Label
                 {
                     Location = new Point(10, 65),
                     ForeColor = Color.Green,
-                    Size = new Size(290, 20),
+                    Size = new Size(273, 20),
+                    BackColor = Color.FromArgb(255, 240, 240, 240),
 
                 };
                 loadingLabel1.Font = new Font(loadingLabel1.Font.Name, 12, loadingLabel1.Font.Style);
                 titleLabel.Font = new Font(titleLabel.Font.Name, 10, titleLabel.Font.Style);
+
                 loadingForm.Controls.Add(titleLabel);
-                loadingForm.Controls.Add(colorPanel);
                 loadingForm.Controls.Add(loadingLabel);
                 loadingForm.Controls.Add(loadingLabel1);
+                loadingForm.Controls.Add(titlePanel);
+                loadingForm.Controls.Add(bgPanel);
                 UpdateProgress(value);
             }
             else
@@ -251,7 +267,7 @@ namespace NoRain
             }
         }
 
-        private static void UpdateProgress(double value)
+        private void UpdateProgress(double value)
         {
             if (loadingForm != null)
             {

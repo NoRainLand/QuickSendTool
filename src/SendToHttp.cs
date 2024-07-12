@@ -41,11 +41,11 @@ namespace NoRain
                         {
                             progressCallback(percentage);
                             // 使用Invoke确保在UI线程上更新UI
-                            if (MainForm.uiContext != null)
+                            if (Program.MainForm.uiContext != null)
                             {
-                                MainForm.uiContext.Post(_ =>
+                                Program.MainForm.uiContext.Post(_ =>
                                 {
-                                    MainForm.ShowLoading(percentage);
+                                    Program.MainForm.ShowLoading(percentage);
                                 }, null);
                             }
                         }
@@ -63,11 +63,11 @@ namespace NoRain
 
                         var response = await client.PostAsync(url, content);
                         completionCallback(true, $"服务器响应状态码: {response.StatusCode}");
-                        if (MainForm.uiContext != null)
+                        if (Program.MainForm.uiContext != null)
                         {
-                            MainForm.uiContext.Post(async _ =>
+                            Program.MainForm.uiContext.Post(async _ =>
                             {
-                                await MainForm.HideLoading(response.StatusCode == HttpStatusCode.OK);
+                                await Program.MainForm.HideLoading(response.StatusCode == HttpStatusCode.OK);
                             }, null);
                         }
                     }
@@ -76,11 +76,11 @@ namespace NoRain
             catch (Exception ex)
             {
                 completionCallback(false, $"发送文件时发生错误: {ex.Message}");
-                if (MainForm.uiContext != null)
+                if (Program.MainForm.uiContext != null)
                 {
-                    MainForm.uiContext.Post(async _ =>
+                    Program.MainForm.uiContext.Post(async _ =>
                     {
-                        await MainForm.HideLoading(false);
+                        await Program.MainForm.HideLoading(false);
                     }, null);
                 }
 

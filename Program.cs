@@ -3,8 +3,11 @@ using System.IO.Pipes;
 
 namespace NoRain
 {
-    static class Program
+
+
+    public static class Program
     {
+        public static MainForm MainForm = new MainForm();
         [STAThread]
         static void Main(string[] args)
         {
