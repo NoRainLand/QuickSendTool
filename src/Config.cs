@@ -18,12 +18,13 @@ namespace NoRain
         //接口
         public static string api = "/upload";
 
-        private static string configPath = "./QSConfig.json";
+        private static string configPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppName, "config.json");
 
         public static string PipeName = "NoRainQSendPipe";
 
         public static bool ReadConfig()
         {
+            EnsureConfigDirectoryExists();
             if (File.Exists(configPath))
             {
                 string json = File.ReadAllText(configPath);
@@ -47,10 +48,17 @@ namespace NoRain
                 return false;
             }
         }
-
+        private static void EnsureConfigDirectoryExists()
+        {
+            var directoryPath = Path.GetDirectoryName(configPath);
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath!);
+            }
+        }
         public static void WriteConfig(string host, int port, string api)
         {
-
+            EnsureConfigDirectoryExists();
             Config.host = host;
             Config.port = port;
             Config.api = api;
