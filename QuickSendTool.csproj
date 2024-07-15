@@ -10,7 +10,7 @@
         <UseWindowsForms>true</UseWindowsForms>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <StartupObject>NoRain.Program</StartupObject>
-        <ApplicationIcon>img\Q.ico</ApplicationIcon>
+        <ApplicationIcon>img\QucikSendTool.ico</ApplicationIcon>
         <Authors>NoRain</Authors>
         <Company>unknownmothergoose</Company>
         <Copyright>Copyright by NoRain</Copyright>
@@ -19,10 +19,10 @@
 
     </PropertyGroup>
     <ItemGroup>
-        <EmbeddedResource Include="img\Q.ico">
+        <EmbeddedResource Include="img\QucikSendTool.ico">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </EmbeddedResource>
-        <EmbeddedResource Include="img\Q.png">
+        <EmbeddedResource Include="img\QucikSendTool.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </EmbeddedResource>
     </ItemGroup>

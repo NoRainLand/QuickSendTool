@@ -22,6 +22,8 @@ namespace NoRain
 
         private Button? button1 = null;
 
+        private Label? copyright = null;
+
 
 
         private NotifyIcon? notifyIcon = null;
@@ -38,7 +40,7 @@ namespace NoRain
             // {
             //     Console.WriteLine(resourceName);
             // }
-            using (Stream? iconStream = asm.GetManifestResourceStream($"{Config.AppName}.img.Q.ico"))
+            using (Stream? iconStream = asm.GetManifestResourceStream($"{Config.AppName}.img.QucikSendTool.ico"))
             {
                 if (iconStream != null)
                 {
@@ -66,7 +68,7 @@ namespace NoRain
                 FormBorderStyle = FormBorderStyle.FixedDialog,
                 MinimizeBox = false,
                 MaximizeBox = false,
-                Width = 330,
+                Width = 340,
                 Height = 250
             };
 
@@ -75,13 +77,13 @@ namespace NoRain
             label = new Label
             {
                 Text = "请确认服务器配置",
-                Location = new Point(0, 0),
+                Location = new Point(20, 15),
                 AutoSize = true,
             };
             label1 = new Label
             {
                 Text = "请输入服务器IP：",
-                Location = new Point(20, 30),
+                Location = new Point(20, 45),
                 Width = 120
             };
             textBox1 = new TextBox
@@ -93,7 +95,7 @@ namespace NoRain
             label2 = new Label
             {
                 Text = "请输入服务器端口：",
-                Location = new Point(20, 60),
+                Location = new Point(20, 75),
                 Width = 120
             };
             textBox2 = new TextBox
@@ -105,7 +107,7 @@ namespace NoRain
             label3 = new Label
             {
                 Text = "请输入服务器API：",
-                Location = new Point(20, 90),
+                Location = new Point(20, 105),
                 Width = 120
             };
             textBox3 = new TextBox
@@ -117,11 +119,16 @@ namespace NoRain
             button1 = new Button
             {
                 Text = "保存配置",
-                Location = new Point(20, 120)
+                Location = new Point(20, 135)
             };
 
-
-
+            copyright = new Label
+            {
+                Text = "copyright by NoRain 2024",
+                ForeColor = Color.FromArgb(255, 128, 128, 128),
+                AutoSize = true,
+                Location = new Point(20, 165)
+            };
 
 
             button1.Click += new EventHandler((sender, e) =>
@@ -142,6 +149,7 @@ namespace NoRain
             form.Controls.Add(label3);
             form.Controls.Add(textBox3);
             form.Controls.Add(button1);
+            form.Controls.Add(copyright);
 
 
 

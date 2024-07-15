@@ -46,7 +46,7 @@ assembly.GetManifestResourceStream(resourceName);
 同时可以使用如下代码嵌入.cspoj
 
 ```xml
-<EmbeddedResource Include="img\Q.ico">
+<EmbeddedResource Include="img\QucikSendTool.ico">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 </EmbeddedResource>
 ```
@@ -54,3 +54,5 @@ assembly.GetManifestResourceStream(resourceName);
 注意一点，```GetManifestResourceStream```中的命名空间是指程序的名字，而不是代码里边使用的命名空间……
 
 8，.ico图标里边可以包含很多个分辨率，可以去[这个网站](https://cn.pic2ico.com/)在线转换，然后程序直接引用一个就够了
+
+9，打包：```dotnet publish -c Release -r win10-x64 --self-contained false```
