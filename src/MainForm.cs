@@ -21,6 +21,7 @@ namespace NoRain
         private TextBox? textBox3 = null;
 
         private Button? button1 = null;
+        private Button? button2 = null;
 
         private Label? copyright = null;
 
@@ -30,8 +31,10 @@ namespace NoRain
 
         private ContextMenuStrip? trayMenu = null;
 
+        //UI上下文
         public SynchronizationContext? uiContext = null;
 
+        CheckBox? radioButton = null;
 
         public Icon? GetIcon()
         {
@@ -130,6 +133,28 @@ namespace NoRain
                 Location = new Point(20, 165)
             };
 
+            button2 = new Button
+            {
+                Text = "移除配置",
+                Location = new Point(100, 165)
+            };
+
+            radioButton = new CheckBox
+            {
+                Text = "开机自启",
+                Location = new Point(200, 165),
+
+            };
+
+
+            if (Config.ReadConfig())
+            {
+                textBox1.Text = Config.host;
+                textBox2.Text = Config.port.ToString();
+                textBox3.Text = Config.api;
+            }
+
+
             copyright = new Label
             {
                 Text = "copyright by NoRain 2024",
@@ -146,7 +171,23 @@ namespace NoRain
                     // ShowLoading(100.0);
                 });
 
+            button2.Click += new EventHandler((sender, e) =>
+            {
+                Config.RemoveConfig();
+            });
 
+
+            radioButton.CheckedChanged += new EventHandler((sender, e) =>
+            {
+                if (radioButton.Checked)
+                {
+                    WinTask.Add();
+                }
+                else
+                {
+                    WinTask.Remove();
+                }
+            });
 
 
             form.Controls.Add(label);
@@ -158,6 +199,8 @@ namespace NoRain
             form.Controls.Add(label3);
             form.Controls.Add(textBox3);
             form.Controls.Add(button1);
+            form.Controls.Add(button2);
+            // form.Controls.Add(radioButton);
             form.Controls.Add(copyright);
 
 

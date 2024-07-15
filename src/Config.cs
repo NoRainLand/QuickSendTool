@@ -72,7 +72,18 @@ namespace NoRain
             File.WriteAllText(configPath, jObject.ToString());
         }
 
-
+        public static void RemoveConfig()
+        {
+            if (File.Exists(configPath))
+            {
+                File.Delete(configPath);
+            }
+            var directoryPath = Path.GetDirectoryName(configPath);
+            if (Directory.Exists(directoryPath))
+            {
+                Directory.Delete(directoryPath);
+            }
+        }
 
     }
 }
