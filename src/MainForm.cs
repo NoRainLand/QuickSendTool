@@ -24,7 +24,7 @@ namespace NoRain
 
         private Label? copyright = null;
 
-
+        private Label? tips = null;
 
         private NotifyIcon? notifyIcon = null;
 
@@ -68,8 +68,8 @@ namespace NoRain
                 FormBorderStyle = FormBorderStyle.FixedDialog,
                 MinimizeBox = false,
                 MaximizeBox = false,
-                Width = 340,
-                Height = 250
+                Width = 350,
+                Height = 280
             };
 
 
@@ -80,10 +80,18 @@ namespace NoRain
                 Location = new Point(20, 15),
                 AutoSize = true,
             };
+
+            tips = new Label
+            {
+                Text = "保存配置之后对着文件右键“发送到服务器”即可实现上传",
+                Location = new Point(20, 45),
+                AutoSize = true
+            };
+
             label1 = new Label
             {
                 Text = "请输入服务器IP：",
-                Location = new Point(20, 45),
+                Location = new Point(20, 75),
                 Width = 120
             };
             textBox1 = new TextBox
@@ -95,7 +103,7 @@ namespace NoRain
             label2 = new Label
             {
                 Text = "请输入服务器端口：",
-                Location = new Point(20, 75),
+                Location = new Point(20, 105),
                 Width = 120
             };
             textBox2 = new TextBox
@@ -107,7 +115,7 @@ namespace NoRain
             label3 = new Label
             {
                 Text = "请输入服务器API：",
-                Location = new Point(20, 105),
+                Location = new Point(20, 135),
                 Width = 120
             };
             textBox3 = new TextBox
@@ -119,7 +127,7 @@ namespace NoRain
             button1 = new Button
             {
                 Text = "保存配置",
-                Location = new Point(20, 135)
+                Location = new Point(20, 165)
             };
 
             copyright = new Label
@@ -127,7 +135,7 @@ namespace NoRain
                 Text = "copyright by NoRain 2024",
                 ForeColor = Color.FromArgb(255, 128, 128, 128),
                 AutoSize = true,
-                Location = new Point(20, 165)
+                Location = new Point(20, 195)
             };
 
 
@@ -142,6 +150,7 @@ namespace NoRain
 
 
             form.Controls.Add(label);
+            form.Controls.Add(tips);
             form.Controls.Add(label1);
             form.Controls.Add(textBox1);
             form.Controls.Add(label2);
