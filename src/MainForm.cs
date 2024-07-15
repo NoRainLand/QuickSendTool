@@ -143,7 +143,7 @@ namespace NoRain
             {
                 Text = "开机自启",
                 Location = new Point(200, 165),
-
+                Checked = StartupTaskManager.HasTask()
             };
 
 
@@ -181,11 +181,11 @@ namespace NoRain
             {
                 if (radioButton.Checked)
                 {
-                    WinTask.Add();
+                    StartupTaskManager.Add();
                 }
                 else
                 {
-                    WinTask.Remove();
+                    StartupTaskManager.Remove();
                 }
             });
 
@@ -200,7 +200,7 @@ namespace NoRain
             form.Controls.Add(textBox3);
             form.Controls.Add(button1);
             form.Controls.Add(button2);
-            // form.Controls.Add(radioButton);
+            form.Controls.Add(radioButton);
             form.Controls.Add(copyright);
 
 
