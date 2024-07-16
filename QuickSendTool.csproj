@@ -16,9 +16,9 @@
         <Copyright>Copyright by NoRain</Copyright>
         <PackageIcon>img\Q.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <Version>1.1.0.0</Version>
-        <FileVersion>1.1.0.0</FileVersion>
-        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <Version>1.1.1.0</Version>
+        <FileVersion>1.1.1.0</FileVersion>
+        <AssemblyVersion>1.1.1.0</AssemblyVersion>
     </PropertyGroup>
     <ItemGroup>
         <EmbeddedResource Include="img\QucikSendTool.ico">
