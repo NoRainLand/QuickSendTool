@@ -1,5 +1,7 @@
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
+using Timer = System.Windows.Forms.Timer;
 
 namespace NoRain
 {
@@ -273,6 +275,7 @@ namespace NoRain
                     loadingLabel.ForeColor = Color.Red;
                 }
             }
+            StopTimer();
             await Task.Delay(400);
             loadingForm?.Hide();
         }
@@ -344,11 +347,45 @@ namespace NoRain
                 loadingForm.Controls.Add(loadingLabel1);
                 loadingForm.Controls.Add(titlePanel);
                 loadingForm.Controls.Add(bgPanel);
-                UpdateProgress(value);
+
+                StartTimer();
             }
-            else
+            loadingValue = value;
+        }
+
+        private double loadingValue = 0.0;
+
+        private Timer? loadingTimer = null;
+
+
+
+
+
+
+        private void StartTimer()
+        {
+            if (loadingTimer == null)
             {
-                UpdateProgress(value);
+                loadingTimer = new Timer
+                {
+                    Interval = 64,
+                };
+            }
+            loadingTimer.Tick += new EventHandler((sender, e) =>
+            {
+                UpdateProgress(loadingValue);
+            });
+            loadingTimer.Start();
+        }
+
+
+        private void StopTimer()
+        {
+            if (loadingTimer != null)
+            {
+                loadingTimer.Stop();
+                loadingTimer.Dispose();
+                loadingTimer = null;
             }
         }
 
