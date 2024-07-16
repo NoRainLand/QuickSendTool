@@ -10,6 +10,7 @@
 |---|---|
 |1.0.0|初版|
 |1.1.0|添加开机自启，基本逻辑闭环|
+|1.1.1|修复大文件卡死问题|
 
 可以把某个文件右键发送到特定http端口的小工具
 
@@ -24,6 +25,7 @@
 - [x] 支持在后台运行加快速度
 - [x] 通讯
 - [x] 打包成exe
+- [x] 解决大文件卡死问题
 
 下面是一些技术总结/随堂小记
 
@@ -63,3 +65,5 @@ assembly.GetManifestResourceStream(resourceName);
 8，.ico图标里边可以包含很多个分辨率，可以去[这个网站](https://cn.pic2ico.com/)在线转换，然后程序直接引用一个就够了
 
 9，打包：```dotnet publish -c Release -r win10-x64 --self-contained false```
+
+10，大量，频繁更新UI会导致UI卡死
