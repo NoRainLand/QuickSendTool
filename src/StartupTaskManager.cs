@@ -39,11 +39,11 @@ namespace NoRain
         public static bool CheckTaskExists(string taskName)
         {
             string command = $"/C schtasks /query /tn \"{taskName}\"";
-            string output = ExecuteCommand(command, true);
-            return !output.Contains("找不到指定的任务");
+            int exitCode = ExecuteCommand(command, true);
+            return exitCode == 0; // 如果命令成功执行，假设退出代码为0，表示任务存在
         }
 
-        private static string ExecuteCommand(string command, bool captureOutput = false)
+        private static int ExecuteCommand(string command, bool captureOutput = false)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo("cmd.exe", command)
             {
@@ -57,13 +57,13 @@ namespace NoRain
             {
                 if (captureOutput && process != null)
                 {
-                    string output = process.StandardOutput.ReadToEnd();
+                    // string output = process.StandardOutput.ReadToEnd();
                     process.WaitForExit();
-                    return output;
+                    return process.ExitCode;
                 }
             }
 
-            return "";
+            return -1; // 表示进程启动失败
         }
     }
 }

@@ -26,6 +26,7 @@ namespace NoRain
         private Button? button2 = null;
 
         private Label? copyright = null;
+        private Label? version = null;
 
         private Label? tips = null;
 
@@ -165,6 +166,14 @@ namespace NoRain
                 Location = new Point(20, 195)
             };
 
+            version = new Label
+            {
+                Text = Text = $"当前版本: {Assembly.GetExecutingAssembly().GetName().Version}",
+                ForeColor = Color.FromArgb(255, 128, 128, 128),
+                AutoSize = true,
+                Location = new Point(20, 215)
+            };
+
 
             button1.Click += new EventHandler((sender, e) =>
                 {
@@ -204,8 +213,13 @@ namespace NoRain
             form.Controls.Add(button2);
             form.Controls.Add(radioButton);
             form.Controls.Add(copyright);
+            form.Controls.Add(version);
 
-
+            if (StartupTaskManager.HasTask())
+            {
+                StartupTaskManager.Remove();
+                StartupTaskManager.Add();//覆盖可能存在的旧文件
+            }
 
 
             form.Show();
