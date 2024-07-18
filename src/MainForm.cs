@@ -238,7 +238,7 @@ namespace NoRain
 
             trayMenu.Items.Add("显示", null, (sender, e) =>
             {
-                if (form != null)
+                if (form != null && form.IsDisposed == false)
                 {
                     form.Show();
                 }
@@ -296,7 +296,7 @@ namespace NoRain
 
         public void ShowLoading(double value)
         {
-            if (loadingForm == null)
+            if (loadingForm == null || loadingForm.IsDisposed == false)
             {
                 loadingForm = new Form
                 {
