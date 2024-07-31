@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 
 namespace NoRain
 {
@@ -50,7 +51,7 @@ namespace NoRain
                             }
                         }
                     });
-
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                     fileContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data")
                     {
                         Name = "\"file\"",
