@@ -6,8 +6,8 @@ namespace NoRain
 {
     public static class StartupTaskManager
     {
-
         private static string TaskName = "QuickToolTask";
+
         public static void Add()
         {
             AddStartupTask(TaskName, Application.ExecutablePath);
@@ -23,10 +23,10 @@ namespace NoRain
             return CheckTaskExists(TaskName);
         }
 
-
         public static void AddStartupTask(string taskName, string applicationPath)
         {
-            string command = $"/C schtasks /create /tn \"{taskName}\" /tr \"{applicationPath}\" /sc onlogon /rl highest /f";
+            string command =
+                $"/C schtasks /create /tn \"{taskName}\" /tr \"{applicationPath}\" /sc onlogon /rl highest /f";
             ExecuteCommand(command);
         }
 
@@ -50,7 +50,7 @@ namespace NoRain
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 RedirectStandardOutput = captureOutput,
-                RedirectStandardError = captureOutput
+                RedirectStandardError = captureOutput,
             };
 
             using (Process? process = Process.Start(startInfo))

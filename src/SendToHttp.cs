@@ -11,16 +11,24 @@ namespace NoRain
 
         public static async void MainSend(string path)
         {
-            await Send(path, (percentage) =>
+            await Send(
+                path,
+                (percentage) =>
                 {
                     Console.WriteLine($"上传进度: {percentage}%");
-                }, (success, message) =>
+                },
+                (success, message) =>
                 {
                     Console.WriteLine(message);
-                });
+                }
+            );
         }
 
-        public async static Task Send(string path, Action<double> progressCallback, Action<bool, string> completionCallback)
+        public static async Task Send(
+            string path,
+            Action<double> progressCallback,
+            Action<bool, string> completionCallback
+        )
         {
             string url = $"{Config.host}:{Config.port}{Config.api}";
             if (!File.Exists(path))
@@ -35,28 +43,38 @@ namespace NoRain
                 using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
                 {
                     bool isOverSize = fileStream.Length > Config.MinSize * 1024 * 1024;
-                    var fileContent = new ProgressableStreamContent(fileStream, 4096, (sent, total) =>
-                    {
-                        double percentage = (double)sent / total * 100;
-                        if (isOverSize)
+                    var fileContent = new ProgressableStreamContent(
+                        fileStream,
+                        4096,
+                        (sent, total) =>
                         {
-                            progressCallback(percentage);
-                            // 使用Invoke确保在UI线程上更新UI
-                            if (Program.MainForm.uiContext != null)
+                            double percentage = (double)sent / total * 100;
+                            if (isOverSize)
                             {
-                                Program.MainForm.uiContext.Post(_ =>
+                                progressCallback(percentage);
+                                // 使用Invoke确保在UI线程上更新UI
+                                if (Program.MainForm.uiContext != null)
                                 {
-                                    Program.MainForm.ShowLoading(percentage);
-                                }, null);
+                                    Program.MainForm.uiContext.Post(
+                                        _ =>
+                                        {
+                                            Program.MainForm.ShowLoading(percentage);
+                                        },
+                                        null
+                                    );
+                                }
                             }
                         }
-                    });
-                    fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                    fileContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data")
-                    {
-                        Name = "\"file\"",
-                        FileName = "\"" + Path.GetFileName(path) + "\""
-                    };
+                    );
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(
+                        "application/octet-stream"
+                    );
+                    fileContent.Headers.ContentDisposition =
+                        new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data")
+                        {
+                            Name = "\"file\"",
+                            FileName = "\"" + Path.GetFileName(path) + "\"",
+                        };
 
                     using (var content = new MultipartFormDataContent())
                     {
@@ -66,10 +84,15 @@ namespace NoRain
                         completionCallback(true, $"服务器响应状态码: {response.StatusCode}");
                         if (Program.MainForm.uiContext != null)
                         {
-                            Program.MainForm.uiContext.Post(async _ =>
-                            {
-                                await Program.MainForm.HideLoading(response.StatusCode == HttpStatusCode.OK);
-                            }, null);
+                            Program.MainForm.uiContext.Post(
+                                async _ =>
+                                {
+                                    await Program.MainForm.HideLoading(
+                                        response.StatusCode == HttpStatusCode.OK
+                                    );
+                                },
+                                null
+                            );
                         }
                     }
                 }
@@ -79,12 +102,14 @@ namespace NoRain
                 completionCallback(false, $"发送文件时发生错误: {ex.Message}");
                 if (Program.MainForm.uiContext != null)
                 {
-                    Program.MainForm.uiContext.Post(async _ =>
-                    {
-                        await Program.MainForm.HideLoading(false);
-                    }, null);
+                    Program.MainForm.uiContext.Post(
+                        async _ =>
+                        {
+                            await Program.MainForm.HideLoading(false);
+                        },
+                        null
+                    );
                 }
-
             }
         }
 
@@ -95,7 +120,11 @@ namespace NoRain
             private readonly int bufferSize;
             private readonly Action<long, long> progress;
 
-            public ProgressableStreamContent(Stream content, int bufferSize, Action<long, long> progress)
+            public ProgressableStreamContent(
+                Stream content,
+                int bufferSize,
+                Action<long, long> progress
+            )
             {
                 this.content = content ?? throw new ArgumentNullException(nameof(content));
                 this.bufferSize = bufferSize;
@@ -103,7 +132,10 @@ namespace NoRain
                 this.Headers.ContentLength = content.Length;
             }
 
-            protected override async Task SerializeToStreamAsync(Stream stream, TransportContext? context)
+            protected override async Task SerializeToStreamAsync(
+                Stream stream,
+                TransportContext? context
+            )
             {
                 var buffer = new byte[bufferSize];
                 long uploaded = 0;
@@ -113,7 +145,8 @@ namespace NoRain
                     while (true)
                     {
                         var length = await content.ReadAsync(buffer, 0, buffer.Length);
-                        if (length <= 0) break;
+                        if (length <= 0)
+                            break;
 
                         await stream.WriteAsync(buffer, 0, length);
                         uploaded += length;
@@ -129,17 +162,19 @@ namespace NoRain
             }
         }
 
-        public async static void TestSend()
+        public static async void TestSend()
         {
             string path = "C:\\Users\\NoRain_C\\Downloads\\yuanshen_4.2.0.apk";
-            await SendToHttp.Send(path, (percentage) =>
-                {
+            await SendToHttp.Send(
+                path,
+                (percentage) => {
                     // Console.WriteLine($"上传进度: {percentage}%");
-                }, (success, message) =>
+                },
+                (success, message) =>
                 {
                     Console.WriteLine($"上传结果: {message}");
-                });
+                }
+            );
         }
-
     }
 }

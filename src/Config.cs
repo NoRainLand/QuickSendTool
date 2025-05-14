@@ -4,21 +4,24 @@ namespace NoRain
 {
     public static class Config
     {
-
-
-
         public static readonly int MinSize = 64;
 
         public static string AppName = "QuickSendTool";
 
         //服务器ip
         public static string host = "http://127.0.0.1";
+
         //端口
         public static int port = 4100;
+
         //接口
         public static string api = "/upload";
 
-        private static string configPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppName, "config.json");
+        private static string configPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            AppName,
+            "config.json"
+        );
 
         public static string PipeName = "NoRainQSendPipe";
 
@@ -36,7 +39,9 @@ namespace NoRain
                 }
 
                 host = jObject["host"]?.ToString() ?? host; // 使用 null 条件运算符和 null 合并运算符提供默认值
-                port = int.TryParse(jObject["port"]?.ToString(), out int tempPort) ? tempPort : port;
+                port = int.TryParse(jObject["port"]?.ToString(), out int tempPort)
+                    ? tempPort
+                    : port;
                 api = jObject["api"]?.ToString() ?? api;
 
                 Console.WriteLine($"目标地址: {host}:{port}{api}");
@@ -48,6 +53,7 @@ namespace NoRain
                 return false;
             }
         }
+
         private static void EnsureConfigDirectoryExists()
         {
             var directoryPath = Path.GetDirectoryName(configPath);
@@ -56,6 +62,7 @@ namespace NoRain
                 Directory.CreateDirectory(directoryPath!);
             }
         }
+
         public static void WriteConfig(string host, int port, string api)
         {
             EnsureConfigDirectoryExists();
@@ -67,7 +74,7 @@ namespace NoRain
             {
                 ["host"] = host,
                 ["port"] = port,
-                ["api"] = api
+                ["api"] = api,
             };
             File.WriteAllText(configPath, jObject.ToString());
         }
@@ -84,6 +91,5 @@ namespace NoRain
                 Directory.Delete(directoryPath);
             }
         }
-
     }
 }

@@ -1,44 +1,44 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <PublishSingleFile>true</PublishSingleFile>
-        <SelfContained>true</SelfContained>
-        <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
-        <TargetFramework>net6.0-windows</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <UseWindowsForms>true</UseWindowsForms>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
-        <StartupObject>NoRain.Program</StartupObject>
-        <ApplicationIcon>img\QucikSendTool.ico</ApplicationIcon>
-        <Authors>NoRain</Authors>
-        <Company>unknownmothergoose</Company>
-        <Copyright>Copyright by NoRain</Copyright>
-        <PackageIcon>img\Q.png</PackageIcon>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <Version>1.3.0</Version>
-        <FileVersion>1.3.0</FileVersion>
-        <AssemblyVersion>1.3.0</AssemblyVersion>
-    </PropertyGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="img\QucikSendTool.ico">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </EmbeddedResource>
-        <EmbeddedResource Include="img\QucikSendTool.png">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </EmbeddedResource>
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    </ItemGroup>
-    <ItemGroup>
-        <None Update="img\Q.png">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
-        <None Update="README.md">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
-    </ItemGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <StartupObject>NoRain.Program</StartupObject>
+    <ApplicationIcon>img\QucikSendTool.ico</ApplicationIcon>
+    <Authors>NoRain</Authors>
+    <Company>unknownmothergoose</Company>
+    <Copyright>Copyright by NoRain</Copyright>
+    <PackageIcon>img\Q.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Version>1.3.0</Version>
+    <FileVersion>1.3.0</FileVersion>
+    <AssemblyVersion>1.3.0</AssemblyVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="img\QucikSendTool.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="img\QucikSendTool.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="img\Q.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 </Project>

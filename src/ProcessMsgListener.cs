@@ -24,6 +24,7 @@ namespace NoRain
 
         // 定义回调函数的签名
         public delegate void MessageReceivedCallback(string message);
+
         public static void ListenForMessages(MessageReceivedCallback callback, bool isOnce = false)
         {
             Task.Run(() =>

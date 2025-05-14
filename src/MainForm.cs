@@ -46,7 +46,11 @@ namespace NoRain
             // {
             //     Console.WriteLine(resourceName);
             // }
-            using (Stream? iconStream = asm.GetManifestResourceStream($"{Config.AppName}.img.QucikSendTool.ico"))
+            using (
+                Stream? iconStream = asm.GetManifestResourceStream(
+                    $"{Config.AppName}.img.QucikSendTool.ico"
+                )
+            )
             {
                 if (iconStream != null)
                 {
@@ -55,11 +59,10 @@ namespace NoRain
                 else
                 {
                     Console.WriteLine("资源未找到");
-                    Application.Exit();//不正确，直接退出得了
+                    Application.Exit(); //不正确，直接退出得了
                     return null;
                 }
             }
-
         }
 
         public void ShowView()
@@ -75,10 +78,8 @@ namespace NoRain
                 MinimizeBox = false,
                 MaximizeBox = false,
                 Width = 350,
-                Height = 280
+                Height = 280,
             };
-
-
 
             label = new Label
             {
@@ -91,64 +92,55 @@ namespace NoRain
             {
                 Text = "保存配置之后对着文件右键“发送到服务器”即可实现上传",
                 Location = new Point(20, 45),
-                AutoSize = true
+                AutoSize = true,
             };
 
             label1 = new Label
             {
                 Text = "请输入服务器IP：",
                 Location = new Point(20, 75),
-                Width = 120
+                Width = 120,
             };
             textBox1 = new TextBox
             {
                 Text = Config.host,
                 Location = new Point(label1.Location.X + label1.Width, label1.Location.Y - 5),
-                Width = 160
+                Width = 160,
             };
             label2 = new Label
             {
                 Text = "请输入服务器端口：",
                 Location = new Point(20, 105),
-                Width = 120
+                Width = 120,
             };
             textBox2 = new TextBox
             {
                 Text = Config.port.ToString(),
                 Location = new Point(label2.Location.X + label2.Width, label2.Location.Y - 5),
-                Width = 160
+                Width = 160,
             };
             label3 = new Label
             {
                 Text = "请输入服务器API：",
                 Location = new Point(20, 135),
-                Width = 120
+                Width = 120,
             };
             textBox3 = new TextBox
             {
                 Text = Config.api,
                 Location = new Point(label3.Location.X + label3.Width, label3.Location.Y - 5),
-                Width = 160
+                Width = 160,
             };
-            button1 = new Button
-            {
-                Text = "保存配置",
-                Location = new Point(20, 165)
-            };
+            button1 = new Button { Text = "保存配置", Location = new Point(20, 165) };
 
-            button2 = new Button
-            {
-                Text = "移除配置",
-                Location = new Point(100, 165)
-            };
+            button2 = new Button { Text = "移除配置", Location = new Point(100, 165) };
 
             radioButton = new CheckBox
             {
                 Text = "开机自启",
                 Location = new Point(200, 165),
-                Checked = StartupTaskManager.HasTask()
+                Checked = StartupTaskManager.HasTask(),
             };
-
 
             if (Config.ReadConfig())
             {
@@ -157,13 +149,12 @@ namespace NoRain
                 textBox3.Text = Config.api;
             }
 
-
             copyright = new Label
             {
                 Text = "copyright by NoRain 2024",
                 ForeColor = Color.FromArgb(255, 128, 128, 128),
                 AutoSize = true,
-                Location = new Point(20, 195)
+                Location = new Point(20, 195),
             };
 
             version = new Label
@@ -171,35 +162,42 @@ namespace NoRain
                 Text = Text = $"当前版本: {Assembly.GetExecutingAssembly().GetName().Version}",
                 ForeColor = Color.FromArgb(255, 128, 128, 128),
                 AutoSize = true,
-                Location = new Point(20, 215)
+                Location = new Point(20, 215),
             };
 
-
-            button1.Click += new EventHandler((sender, e) =>
+            button1.Click += new EventHandler(
+                (sender, e) =>
                 {
-                    Config.WriteConfig(textBox1?.Text ?? Config.host, int.TryParse(textBox2?.Text, out int tempPort) ? tempPort : Config.port, textBox3?.Text ?? Config.api);
+                    Config.WriteConfig(
+                        textBox1?.Text ?? Config.host,
+                        int.TryParse(textBox2?.Text, out int tempPort) ? tempPort : Config.port,
+                        textBox3?.Text ?? Config.api
+                    );
                     form?.Hide();
                     // ShowLoading(100.0);
-                });
-
-            button2.Click += new EventHandler((sender, e) =>
-            {
-                Config.RemoveConfig();
-            });
-
-
-            radioButton.CheckedChanged += new EventHandler((sender, e) =>
-            {
-                if (radioButton.Checked)
-                {
-                    StartupTaskManager.Add();
                 }
-                else
-                {
-                    StartupTaskManager.Remove();
-                }
-            });
+            );
 
+            button2.Click += new EventHandler(
+                (sender, e) =>
+                {
+                    Config.RemoveConfig();
+                }
+            );
+
+            radioButton.CheckedChanged += new EventHandler(
+                (sender, e) =>
+                {
+                    if (radioButton.Checked)
+                    {
+                        StartupTaskManager.Add();
+                    }
+                    else
+                    {
+                        StartupTaskManager.Remove();
+                    }
+                }
+            );
 
             form.Controls.Add(label);
             form.Controls.Add(tips);
@@ -218,9 +216,8 @@ namespace NoRain
             if (StartupTaskManager.HasTask())
             {
                 StartupTaskManager.Remove();
-                StartupTaskManager.Add();//覆盖可能存在的旧文件
+                StartupTaskManager.Add(); //覆盖可能存在的旧文件
             }
-
 
             form.Show();
         }
@@ -231,33 +228,40 @@ namespace NoRain
             {
                 Icon = GetIcon(),
                 Text = "QuickSendTool",
-                Visible = true
+                Visible = true,
             };
 
             trayMenu = new ContextMenuStrip();
 
-            trayMenu.Items.Add("显示", null, (sender, e) =>
-            {
-                if (form != null)
+            trayMenu.Items.Add(
+                "显示",
+                null,
+                (sender, e) =>
                 {
-                    form.Show();
+                    if (form != null)
+                    {
+                        form.Show();
+                    }
+                    else
+                    {
+                        ShowView();
+                    }
                 }
-                else
-                {
-                    ShowView();
-                }
-            });
+            );
 
-            trayMenu.Items.Add("退出", null, (sender, e) =>
-            {
-                notifyIcon?.Dispose();
-                Application.Exit();
-            });
+            trayMenu.Items.Add(
+                "退出",
+                null,
+                (sender, e) =>
+                {
+                    notifyIcon?.Dispose();
+                    Application.Exit();
+                }
+            );
 
             notifyIcon.ContextMenuStrip = trayMenu;
 
             uiContext = SynchronizationContext.Current;
-
         }
 
         // 显示加载进度
@@ -311,14 +315,13 @@ namespace NoRain
                     ControlBox = false,
                     ShowInTaskbar = false,
                     BackColor = Color.FromArgb(255, 100, 100, 100),
-
                 };
 
                 titlePanel = new Panel
                 {
                     Location = new Point(1, 1),
                     Size = new Size(283, 30),
-                    BackColor = Color.White
+                    BackColor = Color.White,
                 };
 
                 bgPanel = new Panel
@@ -328,14 +331,13 @@ namespace NoRain
                     BackColor = Color.FromArgb(255, 240, 240, 240),
                 };
 
-
                 titleLabel = new Label
                 {
                     Text = "上传进度:0.00%",
                     Location = new Point(5, 5),
                     ForeColor = Color.Black,
                     BackColor = Color.White,
-                    AutoSize = true
+                    AutoSize = true,
                 };
 
                 loadingLabel = new Label
@@ -351,9 +353,12 @@ namespace NoRain
                     ForeColor = Color.Green,
                     Size = new Size(273, 20),
                     BackColor = Color.FromArgb(255, 240, 240, 240),
-
                 };
-                loadingLabel1.Font = new Font(loadingLabel1.Font.Name, 12, loadingLabel1.Font.Style);
+                loadingLabel1.Font = new Font(
+                    loadingLabel1.Font.Name,
+                    12,
+                    loadingLabel1.Font.Style
+                );
                 titleLabel.Font = new Font(titleLabel.Font.Name, 10, titleLabel.Font.Style);
 
                 loadingForm.Controls.Add(titleLabel);
@@ -361,7 +366,6 @@ namespace NoRain
                 loadingForm.Controls.Add(loadingLabel1);
                 loadingForm.Controls.Add(titlePanel);
                 loadingForm.Controls.Add(bgPanel);
-
             }
             StartTimer();
             loadingValue = value;
@@ -371,27 +375,20 @@ namespace NoRain
 
         private Timer? loadingTimer = null;
 
-
-
-
-
-
         private void StartTimer()
         {
             if (loadingTimer == null)
             {
-                loadingTimer = new Timer
-                {
-                    Interval = 64,
-                };
+                loadingTimer = new Timer { Interval = 64 };
             }
-            loadingTimer.Tick += new EventHandler((sender, e) =>
-            {
-                UpdateProgress(loadingValue);
-            });
+            loadingTimer.Tick += new EventHandler(
+                (sender, e) =>
+                {
+                    UpdateProgress(loadingValue);
+                }
+            );
             loadingTimer.Start();
         }
-
 
         private void StopTimer()
         {
@@ -407,7 +404,6 @@ namespace NoRain
         {
             if (loadingForm != null)
             {
-
                 if (loadingForm.Visible == false)
                 {
                     loadingForm.Show();
